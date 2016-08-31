@@ -1,0 +1,18 @@
+### Developed with pleasure with Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msm
+*.msp
+*.lnk
+
+### And IDEA
+.idea/**
+*.iml
+
+### And Gradle
+build/**
+.gradle/**
