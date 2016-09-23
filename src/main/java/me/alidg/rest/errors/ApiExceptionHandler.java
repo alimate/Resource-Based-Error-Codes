@@ -80,13 +80,11 @@ class ApiExceptionHandler {
      * the given {@code locale}
      */
     private ErrorResponse.ApiError toApiError(ErrorCode errorCode, Locale locale) {
-        String codeInString = errorCode.code() + "";
-
         String message;
         try {
-            message = apiErrorMessageSource.getMessage(codeInString, new Object[]{}, locale);
+            message = apiErrorMessageSource.getMessage(errorCode.code(), new Object[]{}, locale);
         } catch (NoSuchMessageException e) {
-            LOGGER.error("Couldn't find any message for {} code under {} locale", codeInString, locale);
+            LOGGER.error("Couldn't find any message for {} code under {} locale", errorCode.code(), locale);
             message = NO_MESSAGE_AVAILABLE;
         }
 

@@ -11,14 +11,14 @@ import org.springframework.http.HttpStatus;
  * @author Ali Dehghani
  */
 public interface ErrorCode {
-    int ERROR_CODE_FOR_UNKNOWN_ERROR = 1;
+    String ERROR_CODE_FOR_UNKNOWN_ERROR = "unknown";
 
     /**
      * Represents the error code.
      *
-     * @return The integral error code
+     * @return The resource based error code
      */
-    int code();
+    String code();
 
     /**
      * The corresponding HTTP status for the given error code
@@ -37,7 +37,7 @@ public interface ErrorCode {
         INSTANCE;
 
         @Override
-        public int code() {
+        public String code() {
             return ERROR_CODE_FOR_UNKNOWN_ERROR;
         }
 

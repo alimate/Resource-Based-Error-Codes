@@ -108,14 +108,14 @@ class ErrorResponse {
         /**
          * The error code
          */
-        private final int errorCode;
+        private final String errorCode;
 
         /**
          * Possibly localized error message
          */
         private final String message;
 
-        ApiError(int errorCode, String message) {
+        ApiError(String errorCode, String message) {
             this.errorCode = errorCode;
             this.message = message;
         }
