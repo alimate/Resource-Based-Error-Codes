@@ -1,16 +1,24 @@
 package me.alidg.rest.errors;
 
+import me.alidg.rest.errors.ErrorResponse.ApiError;
 import me.alidg.service.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * Exception handler that catches all exceptions thrown by the REST layer
@@ -68,7 +76,7 @@ class ApiExceptionHandler {
      * @return An appropriate HTTP Error Response with suitable status code and error messages
      */
     @ExceptionHandler(ServiceException.class)
-    ResponseEntity<ErrorResponse> handleExceptions(ServiceException exception, Locale locale) {
+    ResponseEntity<ErrorResponse> handleServiceExceptions(ServiceException exception, Locale locale) {
         ErrorCode errorCode = errorCodes.of(exception);
         ErrorResponse errorResponse = ErrorResponse.of(errorCode.httpStatus(), toApiError(errorCode, locale));
 
@@ -76,10 +84,27 @@ class ApiExceptionHandler {
     }
 
     /**
+     * Catches all validation exceptions and render appropriate error responses based on each
+     * validation exception
+     */
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleValidationExceptions(MethodArgumentNotValidException exception,
+                                                                    Locale locale) {
+        Stream<ObjectError> errors = exception.getBindingResult().getAllErrors().stream();
+        List<ApiError> apiErrors = errors
+                .map(ObjectError::getDefaultMessage)
+                .map(this::validationErrorCode)
+                .map(code -> toApiError(code, locale))
+                .collect(toList());
+
+        return ResponseEntity.badRequest().body(ErrorResponse.ofErrors(HttpStatus.BAD_REQUEST, apiErrors));
+    }
+
+    /**
      * Convert the passed {@code errorCode} to an instance of {@linkplain ErrorResponse} using
      * the given {@code locale}
      */
-    private ErrorResponse.ApiError toApiError(ErrorCode errorCode, Locale locale) {
+    private ApiError toApiError(ErrorCode errorCode, Locale locale) {
         String message;
         try {
             message = apiErrorMessageSource.getMessage(errorCode.code(), new Object[]{}, locale);
@@ -88,6 +113,20 @@ class ApiExceptionHandler {
             message = NO_MESSAGE_AVAILABLE;
         }
 
-        return new ErrorResponse.ApiError(errorCode.code(), message);
+        return new ApiError(errorCode.code(), message);
+    }
+
+    private ErrorCode validationErrorCode(final String errorCode) {
+        return new ErrorCode() {
+            @Override
+            public String code() {
+                return errorCode;
+            }
+
+            @Override
+            public HttpStatus httpStatus() {
+                return HttpStatus.BAD_REQUEST;
+            }
+        };
     }
 }
