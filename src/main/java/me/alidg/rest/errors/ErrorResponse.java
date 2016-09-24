@@ -16,8 +16,8 @@ import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
  *         "status_code": 404,
  *         "reason_phrase": "Not Found",
  *         "errors": [
- *             {"code": 15, "message": "some, hopefully localized, error message"},
- *             {"code": 16, "message": "yet another message"}
+ *             {"code": "geeks-1", "message": "some, hopefully localized, error message"},
+ *             {"code": "geeks-2", "message": "yet another message"}
  *         ]
  *     }
  * </pre>
@@ -98,7 +98,7 @@ class ErrorResponse {
      * An immutable data structure representing each application-level error. JSON
      * representation of this class would be something like the following:
      * <pre>
-     *     {"code": 12, "message": "some error"}
+     *     {"code": "geek-1", "message": "some error"}
      * </pre>
      *
      * @author Ali Dehghani
