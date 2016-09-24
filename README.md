@@ -1,2 +1,1 @@
-# REST API Error Handling Sample
----
+# REST API Error Handling with Spring Boot
