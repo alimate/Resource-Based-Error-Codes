@@ -25,7 +25,7 @@ and in Windows machines:
 
     gradlew.bat bootRun
 
-Then send a `POST` request with an empty JSON payload, i.e. `{}`. You should get the following as the response:
+Then send a `POST` request with an empty JSON payload, i.e. `{}`, to `/geeks` endpoint. You should get the following as the response:
 
     {
       "status_code": 400,
@@ -41,8 +41,8 @@ Then send a `POST` request with an empty JSON payload, i.e. `{}`. You should get
         }
       ]
     }
-You could also set the `Accept-Language` to `fa-IR` to get the localized error messages. Also, if send arbitrary `first_name`
-and `last_name` in the request body, you would get:
+You could also set the `Accept-Language` to `fa-IR` to get the localized error messages. Also, if you send arbitrary `first_name`
+and `last_name` in the request body, you'll get the following response:
 
     {
       "status_code": 400,
